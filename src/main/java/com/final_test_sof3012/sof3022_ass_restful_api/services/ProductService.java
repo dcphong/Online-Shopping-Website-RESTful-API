@@ -29,10 +29,8 @@ public class ProductService {
         );
     }
 
-    public ResponseEntity<Product> getProductById(Integer id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product.map(ResponseEntity::ok) // Nếu tìm thấy, trả về 200 OK
-                .orElseGet(() -> ResponseEntity.notFound().build()); // Nếu không tìm thấy, trả về 404 Not Found
+    public ResponseEntity<ProductDTO> getProductById(Integer id) {
+        return productRepository.findById(id).map(productMapper::toProductDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     public ResponseEntity<Product> createProduct(Product product) {

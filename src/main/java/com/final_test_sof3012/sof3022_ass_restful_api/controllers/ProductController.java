@@ -32,14 +32,14 @@ public class ProductController {
 
     @GetMapping("products/{id}")
     public ResponseEntity<ResponseObject<ProductDTO>> getProductById(@PathVariable Integer id) {
-        Product product = productService.getProductById(id).getBody();
+        ProductDTO product = productService.getProductById(id).getBody();
         if( product == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject<>("ERROR","Not found products with id "+id,null)
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObject<>("OK","Search for product successfully",ProductDTO.builder().build())
+                new ResponseObject<>("OK","Search for product successfully",product)
         );
     }
 

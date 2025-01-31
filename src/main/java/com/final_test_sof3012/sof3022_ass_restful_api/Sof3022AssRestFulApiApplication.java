@@ -18,6 +18,7 @@ public class Sof3022AssRestFulApiApplication {
         System.setProperty("SPRING_DB_PASSWORD",dotenv.get("SPRING_DB_PASSWORD"));
         System.setProperty("SPRING_DEFAULT_FROM",dotenv.get("SPRING_DEFAULT_FROM"));
         System.setProperty("CLOUDINARY_URL",dotenv.get("CLOUDINARY_URL"));
+        System.setProperty("JWT_SECRET_KEY",dotenv.get("JWT_SECRET_KEY"));
         Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
         SpringApplication.run(Sof3022AssRestFulApiApplication.class, args);
     }
