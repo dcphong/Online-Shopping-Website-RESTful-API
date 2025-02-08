@@ -1,60 +1,80 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.utils;
 
+import com.final_test_sof3012.sof3022_ass_restful_api.models.Roles;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
-    @Value("${JWT_SECRET_KEY}")
-    String SECRET_KEY;
 
+    @Value("${EXPIRATION_JWT_TIME:84600000}")
+    private static Long EXPIRATION_TIME;
 
-    private Key getSigningKey(){
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    }
+    private final Key getSigningKey;
 
-    public String generateToken(String username){
-        long EXPIRATION_TIME = 84600000;
+    public String generateToken(String username, Set<Roles> roles){
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("roles",roles);
         return Jwts
                 .builder()
+                .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .signWith(getSigningKey, SignatureAlgorithm.HS256)
                 .compact();
     }
-
-    public String extractUsername(String token){
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public Claims extractedAllClaims(String token){
+        try{
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch(JwtException e){
+            return null;
+        }
     }
-
+    public String extractUsername(String token){
+       Claims claims = extractedAllClaims(token);
+       return claims != null ? claims.getSubject() : null;
+    }
+    public String extractRoles(String token) {
+        Claims claims = extractedAllClaims(token);
+        return claims != null ? claims.get("roles", String.class) : null;
+    }
     public boolean validateToken(String token,String username){
-        return extractUsername(token).equals(username) && !isTokenExpired(token);
+        String extractedUsername = extractUsername(token);
+        return extractedUsername != null && extractedUsername.equals(username) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token){
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getExpiration()
-                .before(new Date());
+        try {
+            Date expiration = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+            return expiration.before(new Date());
+        }catch(JwtException e){
+            return true;
+        }
     }
 }

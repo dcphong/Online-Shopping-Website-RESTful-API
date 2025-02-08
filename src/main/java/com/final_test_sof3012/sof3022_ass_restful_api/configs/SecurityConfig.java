@@ -1,37 +1,46 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.configs;
 
-import com.final_test_sof3012.sof3022_ass_restful_api.Repositories.AccountRepository;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-@RequiredArgsConstructor
-public class SecurityConfig {
-     AccountRepository accountRepository;
+public class SecurityConfig implements WebMvcConfigurer {
 
-     @Bean
-    public AuthenticationManager authenticationManager(){
-         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-         provider.setUserDetailsService(username -> (org.springframework.security.core.userdetails.UserDetails) accountRepository.findById(username)
-                 .orElseThrow(() -> new UsernameNotFoundException("User not found")));
-         provider.setPasswordEncoder(passwordEncoder());
-         return new ProviderManager(provider);
-     }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5500")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONAL")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
 
-     @Bean
-     public PasswordEncoder passwordEncoder(){
-         return new BCryptPasswordEncoder();
-     }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/**")
+                                .permitAll()
+                                .requestMatchers("/api/v1/user/**", "/api/v1/admin/**")
+                                .authenticated()
+                                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                ).formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
 }

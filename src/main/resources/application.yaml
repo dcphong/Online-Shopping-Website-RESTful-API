@@ -1,21 +1,24 @@
 #cloudinary:
- # cloud_name: ${CLOUDINARY_CLOUD_NAME}
-  #api_key: ${CLOUDINARY_API_KEY}
-  #api_secret: ${CLOUDINARY_API_SECRET}
+# cloud_name: ${CLOUDINARY_CLOUD_NAME}
+#api_key: ${CLOUDINARY_API_KEY}
+#api_secret: ${CLOUDINARY_API_SECRET}
 spring:
   application:
     name: SOF3022_ASS_RestFul_API
   datasource:
-    url: jdbc:sqlserver://localhost;database=J5Shop;encrypt=false;trustServerCertificate=true
-    username: sa #${SPRING_DB_USERNAME}
-    password: 123 #${SPRING_DB_PASSWORD}
+    url: ${SPRING_DB_URL}
+    username:   ${SPRING_DB_USERNAME}
+    password: ${SPRING_DB_PASSWORD}
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.SQLServerDialect
+        boot:
+          allow_jdbc_metadata_access: true
+        dialect: org.hibernate.dialect.SQLServer2012Dialect
   mail:
     host: smtp.gmail.com
     port: 587
@@ -27,3 +30,11 @@ spring:
           auth: true
           starttls:
             enable: true
+  data:
+    redis:
+      host: localhost
+      port: 6397
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB

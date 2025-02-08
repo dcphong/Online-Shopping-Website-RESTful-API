@@ -1,10 +1,12 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 
@@ -13,19 +15,27 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "orderdetails")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name="Order_Details")
 public class OrderDetails implements Serializable {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Double price;
-    private Integer quantity;
+    Long id;
+
+    Long quantity;
+    Double price;
+    Double total;
+    String descriptions;
 
     @ManyToOne
-    @JoinColumn(name = "productid")
-    private Product product;
+    @JoinColumn(name = "product_id")
+    @JsonManagedReference
+    @JsonBackReference
+    Product product;
+
     @ManyToOne
-    @JoinColumn(name = "orderid")
-    private Order order;
+    @JoinColumn(name = "order_id")
+    @JsonBackReference
+    Order order;
 
 }

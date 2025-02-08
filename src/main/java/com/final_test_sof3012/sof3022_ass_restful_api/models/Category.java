@@ -1,35 +1,38 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Table(name = "Categories")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Entity
+@Table(name = "Categories")
 public class Category {
     @Id
-    @Column(name = "Id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    @Column(name = "category_name",nullable = false,unique = true)
+    String name;
+    @Column(nullable = false)
+    Boolean available;
 
-    @Column(name = "Name")
-    private String name;
+    @Column(name = "created_date",nullable = false)
+    LocalDateTime createdDate;
+    @Column(nullable = true)
+    String descriptions;
 
-    @OneToMany(mappedBy = "category")
-    @JsonBackReference
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     List<Product> productList;
 }
 

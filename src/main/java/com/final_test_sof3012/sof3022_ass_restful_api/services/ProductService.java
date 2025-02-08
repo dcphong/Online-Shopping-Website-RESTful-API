@@ -1,6 +1,6 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.services;
 
-import com.final_test_sof3012.sof3022_ass_restful_api.Repositories.ProductRepository;
+import com.final_test_sof3012.sof3022_ass_restful_api.repositories.ProductRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.ProductDTO;
 import com.final_test_sof3012.sof3022_ass_restful_api.mappers.ProductMapper;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.Product;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +28,7 @@ public class ProductService {
         );
     }
 
-    public ResponseEntity<ProductDTO> getProductById(Integer id) {
+    public ResponseEntity<ProductDTO> getProductById(Long id) {
         return productRepository.findById(id).map(productMapper::toProductDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -38,7 +37,7 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
-    public ResponseEntity<Product> updateProduct(Integer id, Product product) {
+    public ResponseEntity<Product> updateProduct(Long id, Product product) {
         if (!productRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -47,7 +46,7 @@ public class ProductService {
         return ResponseEntity.ok(updatedProduct);
     }
 
-    public ResponseEntity<Void> deleteProduct(Integer id) {
+    public ResponseEntity<Void> deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

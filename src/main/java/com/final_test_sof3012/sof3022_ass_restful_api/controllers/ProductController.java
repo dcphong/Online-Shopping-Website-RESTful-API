@@ -31,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping("products/{id}")
-    public ResponseEntity<ResponseObject<ProductDTO>> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<ResponseObject<ProductDTO>> getProductById(@PathVariable Long id) {
         ProductDTO product = productService.getProductById(id).getBody();
         if( product == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
