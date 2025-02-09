@@ -42,7 +42,7 @@ public class User implements Serializable {
     @ElementCollection(targetClass = Roles.class, fetch =  FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "Roles", joinColumns = @JoinColumn(name = "user_id"))
-    Set<Roles> roles;
+    Set<Roles> roles = Set.of(Roles.ROLE_USER);
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

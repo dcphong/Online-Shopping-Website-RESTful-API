@@ -17,6 +17,11 @@ class Sof3022AssRestFulApiApplicationTests {
         registry.add("CLOUDINARY_URL", () -> "cloudinary://349514472457269:r8pMioZZudpQKeWjDENMtQ0vsbg@sof3022-image-cloudinary");
         registry.add("EXPIRATION_TIME", () -> "84600000");
         registry.add("JWT_SECRET_KEY", () -> "asdofhoahwelfknaldkjvbaibwieofulahdslkfjhfkhfaiwubeifawefjshdalfkjhdaslkfjahslkdfjahlskdf");
-
+        registry.add("SPRING_DB_USERNAME", () -> "sa");
+        registry.add("SPRING_DB_PASSWORD", () -> "123");
+        registry.add("SPRING_MAIL_USERNAME", () -> "doanchanphong0610@gmail.com");
+        registry.add("SPRING_MAIL_PASSWORD", () -> "pslu mezy znzy mdeb");
+        registry.add("SPRING_DEFAULT_FROM", () -> "doanchanphong0610@gmail.com");
+        registry.add("SPRING_DB_URL", () -> "jdbc:sqlserver://localhost;database=DCPsShopWebsite;encrypt=false;trustServerCertificate=true");
     }
 }

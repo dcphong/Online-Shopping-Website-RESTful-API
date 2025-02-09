@@ -5,11 +5,17 @@ import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
 import com.final_test_sof3012.sof3022_ass_restful_api.repositories.UserRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.UserDTO;
+import com.final_test_sof3012.sof3022_ass_restful_api.specifications.UserSpecifications;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,5 +53,28 @@ public class UserService {
         return ResponseEntity.ok(
                 new ResponseObject<>("OK","found user with id: "+id+" successfully!", userMapper.toUserDTO(user.get()))
         );
+    }
+
+    public ResponseEntity<ResponseObject> getUserByUsername(String username){
+        Specification<User> userSpec = UserSpecifications.hasUsername(username);
+        Optional<User> user = userRepository.findOne(userSpec);
+        return ResponseEntity.ok(
+                new ResponseObject(
+                        "OK","Find user with username :"+username+" successfully!",userMapper.toUserDTO(user.orElse(null))
+                )
+        );
+    }
+    public Optional<User> findUserByUsername(String username){
+        Specification<User> userSpec = UserSpecifications.hasUsername(username);
+        Optional<User> user = userRepository.findOne(userSpec);
+        return user;
+    }
+
+    public Optional<UserDTO> findUserById(Long id){
+        return userRepository.findById(id).map(userMapper::toUserDTO);
+    }
+
+    public void save(User user){
+        userRepository.save(user);
     }
 }

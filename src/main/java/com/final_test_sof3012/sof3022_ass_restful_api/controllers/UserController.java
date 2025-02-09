@@ -7,11 +7,9 @@
     import lombok.AccessLevel;
     import lombok.RequiredArgsConstructor;
     import lombok.experimental.FieldDefaults;
+    import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
-    import org.springframework.web.bind.annotation.GetMapping;
-    import org.springframework.web.bind.annotation.PathVariable;
-    import org.springframework.web.bind.annotation.RequestMapping;
-    import org.springframework.web.bind.annotation.RestController;
+    import org.springframework.web.bind.annotation.*;
 
     import javax.swing.text.html.Option;
     import java.util.List;
@@ -34,5 +32,22 @@
         @GetMapping("/users/{id}")
         public ResponseEntity<ResponseObject<UserDTO>> getUserById(@PathVariable Long id){
             return userService.getById(id);
+        }
+
+        @GetMapping("/users/search")
+        public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam String username){
+            return userService.getUserByUsername(username);
+        }
+        @GetMapping("/user/{id}")
+        public ResponseEntity<?> getUserProfileById(@PathVariable Long id){
+            Optional<UserDTO> user = userService.findUserById(id);
+            if(user.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject<>("ERROR","User not found!",null)
+                );
+            }
+            return ResponseEntity.ok(
+                    new ResponseObject<>("SUCCESS","Get user by id successfully!",user)
+            );
         }
     }
