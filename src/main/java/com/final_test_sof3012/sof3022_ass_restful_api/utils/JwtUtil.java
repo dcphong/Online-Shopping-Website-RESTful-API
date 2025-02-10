@@ -18,20 +18,28 @@ public class JwtUtil {
 
     @Value("${EXPIRATION_JWT_TIME:84600000}")
     private Long EXPIRATION_TIME;
-
+    @Value("${EXPIRATION_JWT_REFRESH_TIME:84600000}")
+    private Long EXPIRATION_REFRESH_TIME;
 
     private  final Key getSigningKey;
 
-    public String generateToken(String username, Set<Roles> roles) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", roles.stream().map(Roles::name).toList());
+    public String generateToken(String username,List<String> roles) {
         return Jwts
                 .builder()
-                .setClaims(claims)
                 .setSubject(username)
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String username){
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey,SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -76,5 +84,12 @@ public class JwtUtil {
         } catch (JwtException e) {
             return true;
         }
+    }
+
+    public Long getExpirationTime(){
+        return EXPIRATION_TIME / 1000;
+    }
+    public Long getExpirationRefreshTime(){
+        return EXPIRATION_REFRESH_TIME/1000;
     }
 }

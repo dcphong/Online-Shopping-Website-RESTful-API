@@ -55,15 +55,6 @@ public class UserService {
         );
     }
 
-    public ResponseEntity<ResponseObject> getUserByUsername(String username){
-        Specification<User> userSpec = UserSpecifications.hasUsername(username);
-        Optional<User> user = userRepository.findOne(userSpec);
-        return ResponseEntity.ok(
-                new ResponseObject(
-                        "OK","Find user with username :"+username+" successfully!",userMapper.toUserDTO(user.orElse(null))
-                )
-        );
-    }
     public Optional<User> findUserByUsername(String username){
         Specification<User> userSpec = UserSpecifications.hasUsername(username);
         Optional<User> user = userRepository.findOne(userSpec);

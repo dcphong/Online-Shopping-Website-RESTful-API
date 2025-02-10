@@ -1,6 +1,7 @@
     package com.final_test_sof3012.sof3022_ass_restful_api.controllers;
 
     import com.final_test_sof3012.sof3022_ass_restful_api.dto.UserDTO;
+    import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
     import com.final_test_sof3012.sof3022_ass_restful_api.services.UserService;
@@ -18,11 +19,11 @@
     @RestController
     @RequiredArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-    @RequestMapping("/api/v1")
+    @RequestMapping("/api/v1/")
     public class UserController {
 
         UserService userService;
-
+        UserMapper userMapper;
 
         @GetMapping("users")
         public ResponseEntity<List<User>> getListOfUsersDto(){
@@ -35,9 +36,18 @@
         }
 
         @GetMapping("/users/search")
-        public ResponseEntity<ResponseObject> getUserByUsername(@RequestParam String username){
-            return userService.getUserByUsername(username);
+        public ResponseEntity<?> getUserByUsername(@RequestParam String username){
+            Optional<UserDTO> user = userService.findUserByUsername(username).map(userMapper::toUserDTO);
+            if(user.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject<>("ERROR","Not found any user with username: "+username,null)
+                );
+            }
+            return ResponseEntity.ok(
+                    new ResponseObject<>("SUCCESS","Found user with username '"+username+"' successfully!",user)
+            );
         }
+
         @GetMapping("/user/{id}")
         public ResponseEntity<?> getUserProfileById(@PathVariable Long id){
             Optional<UserDTO> user = userService.findUserById(id);
