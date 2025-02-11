@@ -52,7 +52,7 @@ public class Product implements Serializable {
     LocalDateTime createdDate;
 
     @OneToMany( mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonManagedReference
     List<OrderDetails> orderDetailsList;
 
 }

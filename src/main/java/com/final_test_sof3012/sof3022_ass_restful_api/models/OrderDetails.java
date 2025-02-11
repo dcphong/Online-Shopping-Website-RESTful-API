@@ -21,7 +21,6 @@ public class OrderDetails implements Serializable {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     Long id;
-
     Long quantity;
     Double price;
     Double total;
@@ -29,7 +28,6 @@ public class OrderDetails implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @JsonManagedReference
     @JsonBackReference
     Product product;
 

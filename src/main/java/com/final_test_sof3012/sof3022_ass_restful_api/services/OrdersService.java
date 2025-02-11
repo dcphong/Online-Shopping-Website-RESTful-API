@@ -25,28 +25,17 @@ public class OrdersService {
     OrdersRepository orderRepository;
     OrderMapper orderMapper;
 
-    public ResponseEntity<ResponseObject> getAllOrders(){
+    public List<OrderDTO> getAllOrders(){
         List<OrderDTO> list = orderRepository.findAll().stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
-        if(list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("NOT_FOUND","can't found any order!",null)
-            );
-        }
-        return ResponseEntity.ok(
-                new ResponseObject("SUCCESS","Get all order successfully!",list)
-        );
+        return list;
     }
-
-    public ResponseEntity<ResponseObject> getAllOrdersByUserId(Long id){
+    public List<OrderDTO> getAllOrdersById(Long id){
+        List<OrderDTO> list = orderRepository.findById(id).stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
+        return list;
+    }
+    public List<OrderDTO> getAllOrdersByUserId(Long id){
         Specification<Order> orderSpec = OrdersSpecifications.hasUserId(id);
         List<OrderDTO> list = orderRepository.findAll(orderSpec).stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
-        if (list.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject("NOT_FOUND", "Can't find any order for user id: " + id, null)
-            );
-        }
-        return ResponseEntity.ok(
-                new ResponseObject("SUCCESS", "Get order list with user id: " + id, list)
-        );
+        return list;
     }
 }
