@@ -5,6 +5,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.dto.response.AuthResponse;
 import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
 import com.final_test_sof3012.sof3022_ass_restful_api.utils.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +26,7 @@ public class AuthService {
     UserService userService;
     UserMapper userMapper;
 
+    @Transactional
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
@@ -40,6 +42,7 @@ public class AuthService {
                 userMapper.toUserDTO(user));
     }
 
+    @Transactional
     public AuthResponse refreshToken(String refreshToken) {
         String username = jwtUtil.extractUsername(refreshToken);
 

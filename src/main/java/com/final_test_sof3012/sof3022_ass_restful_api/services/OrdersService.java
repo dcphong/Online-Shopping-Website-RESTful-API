@@ -6,6 +6,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.models.Order;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
 import com.final_test_sof3012.sof3022_ass_restful_api.repositories.OrdersRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.specifications.OrdersSpecifications;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,14 +26,17 @@ public class OrdersService {
     OrdersRepository orderRepository;
     OrderMapper orderMapper;
 
+    @Transactional
     public List<OrderDTO> getAllOrders(){
         List<OrderDTO> list = orderRepository.findAll().stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
         return list;
     }
+    @Transactional
     public List<OrderDTO> getAllOrdersById(Long id){
         List<OrderDTO> list = orderRepository.findById(id).stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());
         return list;
     }
+    @Transactional
     public List<OrderDTO> getAllOrdersByUserId(Long id){
         Specification<Order> orderSpec = OrdersSpecifications.hasUserId(id);
         List<OrderDTO> list = orderRepository.findAll(orderSpec).stream().map(orderMapper::toOrderDTO).collect(Collectors.toList());

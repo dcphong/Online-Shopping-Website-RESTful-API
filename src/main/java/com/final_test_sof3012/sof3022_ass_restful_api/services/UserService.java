@@ -6,6 +6,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
 import com.final_test_sof3012.sof3022_ass_restful_api.repositories.UserRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.UserDTO;
 import com.final_test_sof3012.sof3022_ass_restful_api.specifications.UserSpecifications;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,18 +31,21 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
 
+    @Transactional
     public ResponseEntity<List<UserDTO>> getAllUsersDto(){
         return ResponseEntity.ok(
                 userRepository.findAll().stream().map(userMapper::toUserDTO).collect(Collectors.toList())
         );
     }
 
+    @Transactional
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(
                 userRepository.findAll()
         );
     }
 
+    @Transactional
     public ResponseEntity<ResponseObject<UserDTO>> getById(Long id){
         Optional<User> user = userRepository.findById(id);
         if(user.isEmpty()){

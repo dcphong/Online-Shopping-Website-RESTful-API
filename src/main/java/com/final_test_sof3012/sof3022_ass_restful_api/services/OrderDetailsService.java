@@ -5,6 +5,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.mappers.OrderDetailsMapper
 import com.final_test_sof3012.sof3022_ass_restful_api.models.OrderDetails;
 import com.final_test_sof3012.sof3022_ass_restful_api.repositories.OrderDetailsRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.specifications.OrderDetailsSpecifications;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,13 @@ public class OrderDetailsService {
     private final OrderDetailsMapper orderDetailsMapper;
     private final OrderDetailsSpecifications orderDetailsSpecifications;
 
+    @Transactional
     public List<OrderDetailsDTO> getAllOrderDetails(){
         List<OrderDetailsDTO> list = orderDetailsRepository.findAll().stream().map(orderDetailsMapper::toOrderDetailsDTO).toList();
         return list;
     }
 
+    @Transactional
     public List<OrderDetailsDTO> getAllByOrderId(Long id){
         Specification<OrderDetails> orderDetailsSpec = orderDetailsSpecifications.hasOrderId(id);
         List<OrderDetailsDTO> list = orderDetailsRepository

@@ -19,6 +19,7 @@ spring:
         boot:
           allow_jdbc_metadata_access: true
         dialect: org.hibernate.dialect.SQLServer2012Dialect
+    open-in-view: false
   mail:
     host: smtp.gmail.com
     port: 587

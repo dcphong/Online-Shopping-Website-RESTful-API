@@ -12,6 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+    @Mapping(target = "id",source = "id")
     @Mapping(target = "roles",source = "roles")
     @Mapping(target = "orderListIds", expression = "java(mapOrderListIds(user))")
     @Mapping(target = "productCreatingListIds", expression = "java(mapProductCreatingListIds(user))")

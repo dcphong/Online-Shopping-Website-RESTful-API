@@ -4,6 +4,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.repositories.ProductReposi
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.ProductDTO;
 import com.final_test_sof3012.sof3022_ass_restful_api.mappers.ProductMapper;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.Product;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,11 +23,13 @@ public class ProductService {
     ProductRepository productRepository;
     ProductMapper productMapper;
 
+    @Transactional
     public ResponseEntity<List<ProductDTO>> getAllProducts(){
         return ResponseEntity.ok(
                 productRepository.findAll().stream().map(productMapper::toProductDTO).collect(Collectors.toList())
         );
     }
+    @Transactional
 
     public ResponseEntity<ProductDTO> getProductById(Long id) {
         return productRepository.findById(id).map(productMapper::toProductDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());

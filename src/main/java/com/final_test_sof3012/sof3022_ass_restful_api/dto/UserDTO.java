@@ -12,6 +12,7 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO {
+    Long id;
     String username;
     String password;
     String email;

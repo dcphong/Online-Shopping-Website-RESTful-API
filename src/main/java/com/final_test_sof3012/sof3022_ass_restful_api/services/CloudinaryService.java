@@ -2,6 +2,7 @@ package com.final_test_sof3012.sof3022_ass_restful_api.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class CloudinaryService {
 
     Cloudinary cloudinary;
 
+    @Transactional
     public String uploadImage(MultipartFile file) throws IOException {
         try {
             String originalFileName = file.getOriginalFilename();

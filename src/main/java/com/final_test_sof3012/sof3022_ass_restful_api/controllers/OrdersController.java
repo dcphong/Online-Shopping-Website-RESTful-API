@@ -44,15 +44,15 @@ public class OrdersController {
                 new ResponseObject<>("SUCCESS","Get all order with id:"+id+" successfully!",list)
         );
     }
-    @GetMapping("/user/orders/userId")
-    public ResponseEntity<?> getAllOrdersByUserId(@RequestParam Long userId){
-        List<OrderDTO> list = ordersService.getAllOrdersByUserId(userId);
+    @GetMapping("/user/orders/userId/{id}")
+    public ResponseEntity<?> getAllOrdersByUserId(@PathVariable Long id){
+        List<OrderDTO> list = ordersService.getAllOrdersByUserId(id);
         if(list.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject<>("ERROR","Not found any order with user id: "+userId,null)
+                    new ResponseObject<>("ERROR","Not found any order with user id: "+id,null)
             );
         }return ResponseEntity.ok(
-                new ResponseObject<>("SUCCESS","Get all order with user id: "+userId+" successfully!",list)
+                new ResponseObject<>("SUCCESS","Get all order with user id: "+id+" successfully!",list)
         );
     }
 
