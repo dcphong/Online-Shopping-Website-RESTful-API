@@ -24,17 +24,17 @@ public class CloudinaryService {
     Cloudinary cloudinary;
 
     @Transactional
-    public String uploadImage(MultipartFile file) throws IOException {
+    public Map<String,Object> uploadImage(MultipartFile file) throws IOException {
         try {
             String originalFileName = file.getOriginalFilename();
-            Map params1 = ObjectUtils.asMap(
+            Map<String,Object> params = ObjectUtils.asMap(
                     "public_id",originalFileName.substring(0,originalFileName.lastIndexOf(".")),
                     "use_filename", true,
                     "unique_filename", false,
                     "overwrite", true
             );
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), params1);
-            return uploadResult.get("url").toString();
+            Map<String,Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), params);
+            return uploadResult;
         } catch (IOException e) {
             logger.error("Error uploading image to Cloudinary", e);
             throw e;

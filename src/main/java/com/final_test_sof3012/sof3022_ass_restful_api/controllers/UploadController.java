@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/cloudinary")
 @RequiredArgsConstructor
@@ -22,11 +24,11 @@ public class UploadController {
     CloudinaryService cloudinaryService;
 
     @PostMapping("/upload/images")
-    public ResponseEntity<ResponseObject> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try{
-            String imageUrl = cloudinaryService.uploadImage(file);
+            Map<String,Object> imageUrl = cloudinaryService.uploadImage(file);
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("SUCCESS","Upload images successfully!",imageUrl.toString())
+                    new ResponseObject("SUCCESS","Upload images successfully!",imageUrl)
             );
         }catch(Exception e){
             e.printStackTrace();

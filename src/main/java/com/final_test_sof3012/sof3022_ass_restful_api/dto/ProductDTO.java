@@ -23,6 +23,7 @@ public class ProductDTO {
      Long sold_quantity;
      Date createdDate;
      String createdBy;
+     String userCreatedName;
      String categoryId;
      String categoryName;
      String descriptions;

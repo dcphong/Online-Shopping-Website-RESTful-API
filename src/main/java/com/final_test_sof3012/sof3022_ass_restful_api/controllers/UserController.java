@@ -26,13 +26,24 @@
         UserMapper userMapper;
 
         @GetMapping("users")
-        public ResponseEntity<List<User>> getListOfUsersDto(){
-            return  userService.getAllUsers();
+        public ResponseEntity<?> getListOfUsersDto(){
+            return  ResponseEntity.ok(
+                    new ResponseObject<>("OK","List of user",userService.getAllUsers())
+            );
         }
 
         @GetMapping("/users/{id}")
-        public ResponseEntity<ResponseObject<UserDTO>> getUserById(@PathVariable Long id){
-            return userService.getById(id);
+        public ResponseEntity<?> getUserById(@PathVariable Long id){
+            Optional<UserDTO> user = userService.getById(id);
+            if(user.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject<>("ERROR","Not found any user with id:"+id,null)
+                );
+            }
+
+            return ResponseEntity.ok(
+                    new ResponseObject<>("SUCCESS","Get user by id:"+id+" successfully!",user)
+            );
         }
 
         @GetMapping("/users/search")

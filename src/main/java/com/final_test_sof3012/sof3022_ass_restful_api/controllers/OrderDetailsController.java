@@ -6,10 +6,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.services.OrderDetailsServi
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,29 +18,33 @@ public class OrderDetailsController {
     private final OrderDetailsService orderDetailsService;
 
     @GetMapping("")
-    public ResponseEntity<?> getAllOrderDetails(){
+    public ResponseEntity<?> getAllOrderDetails() {
         List<OrderDetailsDTO> list = orderDetailsService.getAllOrderDetails();
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject<>("ERROR","Not found any order details list!",null)
+                    new ResponseObject<>("ERROR", "Not found any order details list!", null)
             );
         }
         return ResponseEntity.ok(
-                new ResponseObject<>("SUCCESS","Get all order details list successfully!",list)
+                new ResponseObject<>("SUCCESS", "Get all order details list successfully!", list)
         );
     }
 
-@GetMapping("/order/{id}")
-    public ResponseEntity<?> getAllByOrderId(@PathVariable Long id){
+    @GetMapping("/order/{id}")
+    public ResponseEntity<?> getAllByOrderId(@PathVariable Long id) {
         List<OrderDetailsDTO> list = orderDetailsService.getAllByOrderId(id);
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject<>("NOT_FOUND","Not found any order details with order id: "+id,null)
+                    new ResponseObject<>("NOT_FOUND", "Not found any order details with order id: " + id, null)
             );
         }
         return ResponseEntity.ok(
-                new ResponseObject<>("SUCCESS","Get order details with order id: "+id+" successfully!",list)
+                new ResponseObject<>("SUCCESS", "Get order details with order id: " + id + " successfully!", list)
         );
-}
+    }
 
+    @PostMapping("")
+    public ResponseEntity<?> createdOrderDetails(@RequestBody List<OrderDetailsDTO> orderDetailsDTO) {
+        return orderDetailsService.createOrderDetails(orderDetailsDTO);
+    }
 }

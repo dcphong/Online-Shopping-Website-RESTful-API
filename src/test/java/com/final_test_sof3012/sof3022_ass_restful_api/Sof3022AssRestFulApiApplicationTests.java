@@ -22,7 +22,8 @@ class Sof3022AssRestFulApiApplicationTests {
         registry.add("SPRING_MAIL_USERNAME", () -> "doanchanphong0610@gmail.com");
         registry.add("SPRING_MAIL_PASSWORD", () -> "pslu mezy znzy mdeb");
         registry.add("SPRING_DEFAULT_FROM", () -> "doanchanphong0610@gmail.com");
-        registry.add("SPRING_DB_URL", () -> "jdbc:sqlserver://localhost;database=DCPsShopWebsite;encrypt=false;trustServerCertificate=true");
         registry.add("EXPIRATION_JWT_REFRESH_TIME", () -> "604800000");
+        registry.add("SPRING_DB_URL", () -> "jdbc:sqlserver://localhost;database=DCPsShopWebsite;encrypt=false;trustServerCertificate=true");
+        registry.add("DEFAULT_PAYMENT_STATUS", () -> "NOT_PAYMENT");
     }
 }

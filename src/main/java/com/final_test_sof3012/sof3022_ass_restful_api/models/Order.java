@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -11,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -40,11 +40,12 @@ public class Order implements Serializable {
     String address;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Nullable
     Date update_at;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
-    OrderStatus status;
+    OrderStatus status = OrderStatus.NOT_PAYMENT;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

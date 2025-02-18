@@ -20,6 +20,7 @@ public interface ProductMapper {
     @Mapping(source = "user.id", target="createdBy")
     @Mapping(target = "orderDetailsIds", expression = "java(mapOrderDetailsListIds(product))")
     @Mapping(target = "descriptions",source = "descriptions")
+    @Mapping(target = "userCreatedName", source = "user.fullName")
     ProductDTO toProductDTO(Product product);
 
     Product toProduct(ProductDTO productDTO);

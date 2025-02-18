@@ -4,6 +4,7 @@ import com.final_test_sof3012.sof3022_ass_restful_api.dto.UserDTO;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.LoginRequest;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.RefreshTokenRequest;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.RegistryRequest;
+import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.TokenRequest;
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.response.AuthResponse;
 import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
@@ -67,6 +68,13 @@ public class AuthController {
     @PostMapping("refresh")
     public ResponseEntity<?>refreshToken(@RequestBody RefreshTokenRequest request){
         return ResponseEntity.ok(authService.refreshToken(request.getRefreshToken()));
+    }
+
+    @GetMapping("validateToken")
+    public ResponseEntity<?> isTokenExpired(@RequestBody TokenRequest request){
+        return ResponseEntity.ok(
+                new ResponseObject<>("CHECK SUCCESS","Check token is expired yet?",jwtUtil.isTokenExpired(request.getAccessToken()))
+        );
     }
 
 }

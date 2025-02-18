@@ -39,36 +39,27 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<List<User>> getAllUsers(){
-        return ResponseEntity.ok(
-                userRepository.findAll()
-        );
+    public List<UserDTO> getAllUsers(){
+        return userRepository.findAll().stream().map(userMapper::toUserDTO).collect(Collectors.toList());
     }
 
     @Transactional
-    public ResponseEntity<ResponseObject<UserDTO>> getById(Long id){
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObject<>("NOT_FOUND_USER","can't found user matches this id: "+id,null)
-            );
-        }
-
-        return ResponseEntity.ok(
-                new ResponseObject<>("OK","found user with id: "+id+" successfully!", userMapper.toUserDTO(user.get()))
-        );
+    public Optional<UserDTO> getById(Long id){
+       User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT_FOUND_USER_BY_ID:"+id));
+        return Optional.of(userMapper.toUserDTO(user));
     }
 
+    @Transactional
     public Optional<User> findUserByUsername(String username){
         Specification<User> userSpec = UserSpecifications.hasUsername(username);
         Optional<User> user = userRepository.findOne(userSpec);
         return user;
     }
-
+    @Transactional
     public Optional<UserDTO> findUserById(Long id){
         return userRepository.findById(id).map(userMapper::toUserDTO);
     }
-
+    @Transactional
     public void save(User user){
         userRepository.save(user);
     }

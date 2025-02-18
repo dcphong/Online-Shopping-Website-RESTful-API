@@ -1,7 +1,10 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.controllers;
 
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.OrderDTO;
+import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.OrderRequest;
+import com.final_test_sof3012.sof3022_ass_restful_api.models.Order;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
+import com.final_test_sof3012.sof3022_ass_restful_api.repositories.OrdersRepository;
 import com.final_test_sof3012.sof3022_ass_restful_api.services.OrdersService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class OrdersController {
 
-    OrdersService ordersService;
+     final OrdersService ordersService;
+     final OrdersRepository ordersRepository;
 
     @GetMapping("/user/orders")
     public ResponseEntity<?> getAllOrders(){
@@ -55,5 +59,12 @@ public class OrdersController {
                 new ResponseObject<>("SUCCESS","Get all order with user id: "+id+" successfully!",list)
         );
     }
+
+    @PostMapping("/user/orders")
+    public ResponseEntity<?> order(@RequestBody OrderDTO orderDTO) {
+        return ordersService.createOrder(orderDTO);
+    }
+
+
 
 }
