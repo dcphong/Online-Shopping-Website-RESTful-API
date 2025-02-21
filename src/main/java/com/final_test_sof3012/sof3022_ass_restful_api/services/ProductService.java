@@ -106,12 +106,15 @@ public class ProductService {
         return Optional.of(updatedProduct);
     }
 
-    public ResponseEntity<Void> deleteProduct(Long id) {
+    @Transactional
+    public ResponseEntity<?> deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         productRepository.deleteById(id);
-        return ResponseEntity.noContent().build(); // Trả về mã 204 No Content
+        return ResponseEntity.ok(
+                new ResponseObject<>("DELETE","Delete product with id: "+id+" successfully!",productRepository.findById(id).orElse(null))
+        );
     }
 
 }
