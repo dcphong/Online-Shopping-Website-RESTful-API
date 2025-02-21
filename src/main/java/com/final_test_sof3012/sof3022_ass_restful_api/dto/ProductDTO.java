@@ -20,9 +20,8 @@ public class ProductDTO {
      Boolean available;
      Double discountPrice;
      Long stock_quantity;
-     Long sold_quantity;
      Date createdDate;
-     String createdBy;
+     Long createdBy;
      String userCreatedName;
      String categoryId;
      String categoryName;

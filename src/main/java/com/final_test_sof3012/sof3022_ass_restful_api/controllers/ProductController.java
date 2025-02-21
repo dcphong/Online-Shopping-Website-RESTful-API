@@ -36,8 +36,8 @@ public class ProductController {
 
     @GetMapping("products/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
-        ProductDTO product = productService.getProductById(id).getBody();
-        if( product == null){
+        Optional<ProductDTO> product = productService.getProductById(id);
+        if( product.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObject<>("ERROR","Not found products with id "+id,null)
             );
@@ -71,6 +71,18 @@ public class ProductController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseObject<>("OK","Create product successfully",product)
+        );
+    }
+
+    @PutMapping("user/products/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id, @RequestBody ProductRequest request){
+        Optional<Product> product = productService.updateProduct(id,request);
+        if(product.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok(
+                new ResponseObject<>("OK","Update successfully!",product)
         );
     }
 

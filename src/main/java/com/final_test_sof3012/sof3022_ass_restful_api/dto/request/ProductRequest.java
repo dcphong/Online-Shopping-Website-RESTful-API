@@ -18,11 +18,7 @@ public class ProductRequest {
     Boolean available = true;
     BigDecimal discountPrice = null;
     Long stock_quantity;
-    Long sold_quantity = 0L;
     Long createdBy;
     Long categoryId;
     String descriptions;
-    LocalDateTime createdDate = LocalDateTime.now();
-
-
 }

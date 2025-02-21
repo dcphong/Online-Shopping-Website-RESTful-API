@@ -25,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,9 +41,11 @@ public class ProductService {
     CategoryService categoryService;
     UserMapper userMapper;
     ProductMapper productMapper;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
-    public ResponseEntity<List<ProductDTO>> getAllProducts(){
+    public ResponseEntity<?> getAllProducts(){
         return ResponseEntity.ok(
                 productRepository.findAll().stream().map(productMapper::toProductDTO).collect(Collectors.toList())
         );
@@ -57,15 +61,22 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<ProductDTO> getProductById(Long id) {
-        return productRepository.findById(id).map(productMapper::toProductDTO).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public Optional<ProductDTO> getProductById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:"+id));
+        return Optional.of(productMapper.toProductDTO(product));
+    }
+
+    @Transactional
+    protected Product findProduct(Long id){
+        Product product =  productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:"+id));
+        product.getOrderDetailsList().size();
+        return product;
     }
 
     @Transactional
     public List<ProductDTO> getProductsByUser(Long id){
         Specification<Product> productSpec = ProductSpecifications.hasUserId(id);
-        List<ProductDTO> list = productRepository.findAll(productSpec).stream().map(productMapper::toProductDTO).toList();
-        return list;
+        return productRepository.findAll(productSpec).stream().map(productMapper::toProductDTO).toList();
     }
 
     @Transactional
@@ -76,18 +87,23 @@ public class ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(request,product);
         product.setUser(userMapper.toUser(user));
+        product.setCreatedDate(LocalDateTime.now());
         product.setCategory(category);
 
         return Optional.of(productRepository.save(product));
     }
 
-    public ResponseEntity<Product> updateProduct(Long id, Product product) {
+    @Transactional
+    public Optional<Product> updateProduct(Long id, ProductRequest request) {
         if (!productRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+            return Optional.empty();
         }
-        product.setId(id);
+        Product product = findProduct(id) ;
+        BeanUtils.copyProperties(request,product);
+        product.setUser(userRepository.findById(request.getCreatedBy()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: "+request.getCreatedBy())));
+        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY CATEGORY WITH ID: "+request.getCategoryId())));
         Product updatedProduct = productRepository.save(product);
-        return ResponseEntity.ok(updatedProduct);
+        return Optional.of(updatedProduct);
     }
 
     public ResponseEntity<Void> deleteProduct(Long id) {

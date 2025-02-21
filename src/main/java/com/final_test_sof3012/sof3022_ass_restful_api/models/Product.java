@@ -33,8 +33,6 @@ public class Product implements Serializable {
     BigDecimal discountPrice;
     @Column(nullable = false)
     Long stock_quantity;
-    @Column(nullable = false)
-    Long sold_quantity;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
