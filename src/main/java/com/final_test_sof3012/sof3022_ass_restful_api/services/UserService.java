@@ -1,5 +1,7 @@
 package com.final_test_sof3012.sof3022_ass_restful_api.services;
 
+import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.PasswordRequest;
+import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.UserRequest;
 import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
 import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
@@ -10,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +34,7 @@ public class UserService {
 
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
     @Transactional
     public ResponseEntity<List<UserDTO>> getAllUsersDto(){
@@ -63,4 +68,42 @@ public class UserService {
     public void save(User user){
         userRepository.save(user);
     }
+
+    @Transactional
+    public Optional<UserDTO> updateUser(Long id, UserRequest request){
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: "+id));
+
+        BeanUtils.copyProperties(request,user);
+        User newUser = userRepository.save(user);
+
+        return Optional.of(userMapper.toUserDTO(newUser));
+    }
+
+    @Transactional
+    public ResponseEntity<?> checkValidPassword(Long id, PasswordRequest request){
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID:"+id));
+        if(!passwordEncoder.matches(request.getOldPassword(),user.getPassword())){
+            return ResponseEntity.ok(
+                    new ResponseObject<>("INCORRECT_OLD_PASSWORD","The request oldPassword is not correct",request.getOldPassword())
+            );
+        }
+        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+            return ResponseEntity.ok(
+                    new ResponseObject<>("INCORRECT_CONFIRM_PASSWORD","The request confirmPassword is not correct",request.getConfirmPassword())
+            );
+        }
+        return ResponseEntity.ok(
+                new ResponseObject<>("VALID_PASSWORD","Changeable password!",request.getConfirmPassword())
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<?> changePassword(Long id,PasswordRequest request){
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND USER WITH ID:"+id));
+        user.setPassword(passwordEncoder.encode(request.getConfirmPassword()));
+        return ResponseEntity.ok(
+                new ResponseObject<>("SUCCESS","Change password successfully!",userMapper.toUserDTO(user))
+        );
+    }
+
 }

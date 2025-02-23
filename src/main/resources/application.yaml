@@ -2,12 +2,14 @@
 # cloud_name: ${CLOUDINARY_CLOUD_NAME}
 #api_key: ${CLOUDINARY_API_KEY}
 #api_secret: ${CLOUDINARY_API_SECRET}
+mail:
+  from: ${SPRING_MAIL_DEFAULT_FROM}
 spring:
   application:
     name: SOF3022_ASS_RestFul_API
   datasource:
     url: ${SPRING_DB_URL}
-    username:   ${SPRING_DB_USERNAME}
+    username: ${SPRING_DB_USERNAME}
     password: ${SPRING_DB_PASSWORD}
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
@@ -31,10 +33,14 @@ spring:
           auth: true
           starttls:
             enable: true
+          ssl:
+            protocols: TLSv1.2
   data:
     redis:
       host: localhost
       port: 6397
+      connect-timeout: 60000
+      password:
   servlet:
     multipart:
       max-request-size: 10MB

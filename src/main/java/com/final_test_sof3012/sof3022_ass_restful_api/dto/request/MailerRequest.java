@@ -10,9 +10,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderRequest {
-    Long userId;
-    Double totalAmount;
-    String address;
-    String status;
+public class MailerRequest {
+
+    String from;
+    String to;
+    String[] cc;
+    String[] bcc;
+    String subject;
+    String body;
+    String[] attachments;
+
 }

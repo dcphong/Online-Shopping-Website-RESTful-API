@@ -20,6 +20,7 @@ public class Sof3022AssRestFulApiApplication {
         System.setProperty("JWT_SECRET_KEY",dotenv.get("JWT_SECRET_KEY"));
         System.setProperty("CLOUDINARY_URL",dotenv.get("CLOUDINARY_URL"));
         System.setProperty("EXPIRATION_JWT_TIME",dotenv.get("EXPIRATION_JWT_TIME"));
+        System.setProperty("SPRING_MAIL_DEFAULT_FROM",dotenv.get("SPRING_MAIL_DEFAULT_FROM"));
         Cloudinary cloudinary = new Cloudinary(dotenv.get("CLOUDINARY_URL"));
         SpringApplication.run(Sof3022AssRestFulApiApplication.class, args);
     }

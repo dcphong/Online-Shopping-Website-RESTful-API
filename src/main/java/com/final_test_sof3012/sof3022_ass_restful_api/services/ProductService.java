@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProductService {
 
     ProductRepository productRepository;
@@ -45,47 +45,47 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public ResponseEntity<?> getAllProducts(){
+    public ResponseEntity<?> getAllProducts() {
         return ResponseEntity.ok(
                 productRepository.findAll().stream().map(productMapper::toProductDTO).collect(Collectors.toList())
         );
     }
 
     @Transactional
-    public ResponseEntity<?> listWithPaging(int p){
-        Page<Product> listPage = productRepository.findAll(PageRequest.of(1,p));
+    public ResponseEntity<?> listWithPaging(int p) {
+        Page<Product> listPage = productRepository.findAll(PageRequest.of(1, p));
         List<ProductDTO> list = listPage.stream().map(productMapper::toProductDTO).toList();
         return ResponseEntity.ok(
-                new ResponseObject<>("OK","list",list)
+                new ResponseObject<>("OK", "list", list)
         );
     }
 
     @Transactional
     public Optional<ProductDTO> getProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:"+id));
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:" + id));
         return Optional.of(productMapper.toProductDTO(product));
     }
 
     @Transactional
-    protected Product findProduct(Long id){
-        Product product =  productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:"+id));
+    protected Product findProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("NOT FOUND ANY PRODUCT WITH ID:" + id));
         product.getOrderDetailsList().size();
         return product;
     }
 
     @Transactional
-    public List<ProductDTO> getProductsByUser(Long id){
+    public List<ProductDTO> getProductsByUser(Long id) {
         Specification<Product> productSpec = ProductSpecifications.hasUserId(id);
         return productRepository.findAll(productSpec).stream().map(productMapper::toProductDTO).toList();
     }
 
     @Transactional
-    public Optional<Product> create(ProductRequest request){
-        UserDTO user = userService.getById(request.getCreatedBy()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: "+request.getCreatedBy()));
-        Category category = categoryService.getCategoryById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("NOT FOUND CATEGORY WITH ID: "+request.getCategoryId()));
+    public Optional<Product> create(ProductRequest request) {
+        UserDTO user = userService.getById(request.getCreatedBy()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: " + request.getCreatedBy()));
+        Category category = categoryService.getCategoryById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("NOT FOUND CATEGORY WITH ID: " + request.getCategoryId()));
 
         Product product = new Product();
-        BeanUtils.copyProperties(request,product);
+        BeanUtils.copyProperties(request, product);
         product.setUser(userMapper.toUser(user));
         product.setCreatedDate(LocalDateTime.now());
         product.setCategory(category);
@@ -98,10 +98,14 @@ public class ProductService {
         if (!productRepository.existsById(id)) {
             return Optional.empty();
         }
-        Product product = findProduct(id) ;
-        BeanUtils.copyProperties(request,product);
-        product.setUser(userRepository.findById(request.getCreatedBy()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: "+request.getCreatedBy())));
-        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY CATEGORY WITH ID: "+request.getCategoryId())));
+        Product product = findProduct(id);
+        var productImage = product.getImage();
+        BeanUtils.copyProperties(request, product);
+        if (request.getImage() == null || request.getImage().equals("")) {
+            product.setImage(productImage);
+        }
+        product.setUser(userRepository.findById(request.getCreatedBy()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY USER WITH ID: " + request.getCreatedBy())));
+        product.setCategory(categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("NOT FOUND ANY CATEGORY WITH ID: " + request.getCategoryId())));
         Product updatedProduct = productRepository.save(product);
         return Optional.of(updatedProduct);
     }
@@ -113,8 +117,15 @@ public class ProductService {
         }
         productRepository.deleteById(id);
         return ResponseEntity.ok(
-                new ResponseObject<>("DELETE","Delete product with id: "+id+" successfully!",productRepository.findById(id).orElse(null))
+                new ResponseObject<>("DELETE", "Delete product with id: " + id + " successfully!", productRepository.findById(id).orElse(null))
         );
+    }
+
+    @Transactional
+    public List<ProductDTO> searchProduct(String key) {
+        Specification<Product> spec = ProductSpecifications.hasKeyword(key);
+        List<Product> list = productRepository.findAll(spec);
+        return list.stream().map(productMapper::toProductDTO).toList();
     }
 
 }

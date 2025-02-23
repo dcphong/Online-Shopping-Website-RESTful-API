@@ -1,6 +1,8 @@
     package com.final_test_sof3012.sof3022_ass_restful_api.controllers;
 
     import com.final_test_sof3012.sof3022_ass_restful_api.dto.UserDTO;
+    import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.PasswordRequest;
+    import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.UserRequest;
     import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
@@ -71,4 +73,26 @@
                     new ResponseObject<>("SUCCESS","Get user by id successfully!",user)
             );
         }
+
+        @PutMapping("/user/{id}")
+        public ResponseEntity<?> updateProfile (@PathVariable Long id, @RequestBody UserRequest request){
+            Optional<UserDTO> user = userService.updateUser(id,request);
+            if(user.isEmpty()){
+                return  ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(
+                    new ResponseObject<>("OK","Update user with id: "+id+" successfully!",user)
+            );
+        }
+
+        @PostMapping("/user/check-valid-password/{id}")
+        public ResponseEntity<?> checkValidPassword(@PathVariable Long id, @RequestBody PasswordRequest request){
+            return userService.checkValidPassword(id,request);
+        }
+
+        @PutMapping("/user/change-password/{id}")
+        public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody PasswordRequest request){
+            return userService.changePassword(id,request);
+        }
+
     }

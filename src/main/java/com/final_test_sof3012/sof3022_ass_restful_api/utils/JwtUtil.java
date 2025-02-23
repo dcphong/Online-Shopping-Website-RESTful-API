@@ -38,7 +38,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_REFRESH_TIME))
                 .signWith(getSigningKey,SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -51,9 +51,11 @@ public class JwtUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (JwtException e) {
+            System.out.println("LỖI: Không thể parse token! " + e.getMessage());
             return null;
         }
     }
+
 
     public String extractUsername(String token) {
         Claims claims = extractedAllClaims(token);
@@ -74,14 +76,14 @@ public class JwtUtil {
 
     public boolean isTokenExpired(String token) {
         try {
-            Date expiration = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getExpiration();
+            Claims claims = extractedAllClaims(token);
+            if (claims == null) {
+                return true;
+            }
+            Date expiration = claims.getExpiration();
             return expiration.before(new Date());
         } catch (JwtException e) {
+            System.out.println("LỖI: Token không hợp lệ! " + e.getMessage());
             return true;
         }
     }

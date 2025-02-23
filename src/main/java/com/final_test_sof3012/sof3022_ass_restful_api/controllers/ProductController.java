@@ -90,4 +90,16 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         return productService.deleteProduct(id);
     }
+
+    @GetMapping("products/search")
+    public ResponseEntity<?> searchProducts(@RequestParam String key){
+        List<ProductDTO> list = productService.searchProduct(key);
+        if(list.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(
+                new ResponseObject<>("OK","Search for "+key+" successfully!",list)
+        );
+    }
+
 }

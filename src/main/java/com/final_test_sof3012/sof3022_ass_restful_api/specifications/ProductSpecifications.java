@@ -13,4 +13,9 @@ public class ProductSpecifications {
                 cb.equal(root.get("user").get("id"),id);
     }
 
+    public static Specification<Product> hasKeyword(String key){
+        return (Root<Product> root,CriteriaQuery<?> query, CriteriaBuilder cb) ->
+                cb.like(cb.lower(root.get("name")),"%"+key.toLowerCase()+"%");
+    }
+
 }

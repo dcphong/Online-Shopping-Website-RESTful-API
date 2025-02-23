@@ -46,10 +46,11 @@ public class AuthController {
         return ResponseEntity.ok(
                 authResponse
         );
+//       return authService.login(loginRequest);
     }
 
     @PostMapping("registry")
-    public ResponseEntity<ResponseObject<UserDTO>> registry(@RequestBody RegistryRequest request) {
+    public ResponseEntity<?> registry(@RequestBody RegistryRequest request) {
         if(request == null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ResponseObject<>("ERROR", "Can't registry!", null)
@@ -70,7 +71,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshToken(request.getRefreshToken()));
     }
 
-    @GetMapping("validateToken")
+    @PostMapping("validateToken")
     public ResponseEntity<?> isTokenExpired(@RequestBody TokenRequest request){
         return ResponseEntity.ok(
                 new ResponseObject<>("CHECK SUCCESS","Check token is expired yet?",jwtUtil.isTokenExpired(request.getAccessToken()))
