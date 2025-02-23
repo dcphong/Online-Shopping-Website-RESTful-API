@@ -10,4 +10,17 @@ public class UserSpecifications {
     public static Specification<User> hasUsername(String username){
         return (Root<User> root,CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.equal(root.get("username"),username);
     }
+
+    public static Specification<User> hasPhoneNumber(String phone){
+        return (root,query,cb) -> {
+            return cb.equal(root.get("phone"),phone);
+        };
+    }
+
+    public static Specification<User> hasEmail(String email){
+        return (root,query,cb) -> {
+            return cb.equal(root.get("email"),email);
+        };
+    }
+
 }

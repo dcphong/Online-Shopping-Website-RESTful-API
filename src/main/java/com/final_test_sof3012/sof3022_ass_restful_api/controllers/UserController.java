@@ -48,9 +48,9 @@
             );
         }
 
-        @GetMapping("/users/search")
+        @GetMapping("/users/search/username")
         public ResponseEntity<?> getUserByUsername(@RequestParam String username){
-            Optional<UserDTO> user = userService.findUserByUsername(username).map(userMapper::toUserDTO);
+            Optional<UserDTO> user = userService.getUserByUsername(username);
             if(user.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObject<>("ERROR","Not found any user with username: "+username,null)
@@ -60,6 +60,31 @@
                     new ResponseObject<>("SUCCESS","Found user with username '"+username+"' successfully!",user)
             );
         }
+        @GetMapping("/users/search/phone")
+        public ResponseEntity<?> getUserByPhone(@RequestParam String phone){
+            Optional<UserDTO> user = userService.getUserByPhoneNumber(phone);
+            if(user.isEmpty()){
+                return ResponseEntity.ok(
+                        new ResponseObject<>("ERROR","Not found any user with phone: "+phone,null)
+                );
+            }
+            return ResponseEntity.ok(
+                    new ResponseObject<>("SUCCESS","Found user with phone '"+phone+"' successfully!",user)
+            );
+        }
+        @GetMapping("/users/search/email")
+        public ResponseEntity<?> getUserByEmail(@RequestParam String email){
+            Optional<UserDTO> user = userService.getUserByEmail(email);
+            if(user.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObject<>("ERROR","Not found any user with email: "+email,null)
+                );
+            }
+            return ResponseEntity.ok(
+                    new ResponseObject<>("SUCCESS","Found user with email '"+email+"' successfully!",user)
+            );
+        }
+
 
         @GetMapping("/user/{id}")
         public ResponseEntity<?> getUserProfileById(@PathVariable Long id){

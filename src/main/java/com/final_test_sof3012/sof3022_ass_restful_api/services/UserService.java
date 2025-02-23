@@ -60,6 +60,23 @@ public class UserService {
         Optional<User> user = userRepository.findOne(userSpec);
         return user;
     }
+
+    @Transactional
+    public Optional<UserDTO> getUserByUsername(String username){
+        Specification<User> spec = UserSpecifications.hasUsername(username);
+        return Optional.of(userMapper.toUserDTO( userRepository.findOne(spec).orElseThrow(() -> new RuntimeException("NOT FOUND USER WITH USERNAME:"+username))));
+    }
+    @Transactional
+    public Optional<UserDTO> getUserByPhoneNumber(String phone){
+        Specification<User> spec = UserSpecifications.hasPhoneNumber(phone);
+        return Optional.of(userMapper.toUserDTO( userRepository.findOne(spec).orElseThrow(() -> new RuntimeException("NOT FOUND USER WITH PHONE NUMBER:"+phone))));
+    }
+    @Transactional
+    public Optional<UserDTO> getUserByEmail(String email){
+        Specification<User> spec = UserSpecifications.hasEmail(email);
+        return Optional.of(userMapper.toUserDTO( userRepository.findOne(spec).orElseThrow(() -> new RuntimeException("NOT FOUND USER WITH EMAIL:"+email))));
+    }
+
     @Transactional
     public Optional<UserDTO> findUserById(Long id){
         return userRepository.findById(id).map(userMapper::toUserDTO);

@@ -48,7 +48,7 @@ public class OrderDetailsController {
         return orderDetailsService.createOrderDetails(orderDetailsDTO);
     }
 
-    @GetMapping("/user/order/{id}")
+    @GetMapping("product/order/{id}")
     public ResponseEntity<?> groupByOrderId(@PathVariable Long id){
         return ResponseEntity.ok(
                 new ResponseObject<>("OK","Get order details with product successfully!",orderDetailsService.groupByOrderId(id))
