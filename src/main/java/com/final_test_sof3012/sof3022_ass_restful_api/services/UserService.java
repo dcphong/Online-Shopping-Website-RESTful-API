@@ -123,4 +123,17 @@ public class UserService {
         );
     }
 
+    @Transactional
+    public ResponseEntity<?> setProfilePhoto(Long id,String photo){
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            throw new RuntimeException("NOT FOUND USER WITH ID:"+id);
+        });
+
+        user.setPhoto(photo);
+        userRepository.save(user);
+        return  ResponseEntity.ok(
+                new ResponseObject<>("OK","Set profile photo successfully!",photo)
+        );
+    }
+
 }

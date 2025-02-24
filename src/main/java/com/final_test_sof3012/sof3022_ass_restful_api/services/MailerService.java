@@ -2,7 +2,6 @@ package com.final_test_sof3012.sof3022_ass_restful_api.services;
 
 import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.MailerRequest;
 import com.final_test_sof3012.sof3022_ass_restful_api.interfaces.MailerInterface;
-import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AccessLevel;

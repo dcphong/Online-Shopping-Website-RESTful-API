@@ -120,4 +120,8 @@
             return userService.changePassword(id,request);
         }
 
+        @PutMapping("/user/change-profile-photo/{id}")
+        public ResponseEntity<?> changeProfilePhoto(@PathVariable Long id,@RequestParam String photo){
+            return userService.setProfilePhoto(id,photo);
+        }
     }
