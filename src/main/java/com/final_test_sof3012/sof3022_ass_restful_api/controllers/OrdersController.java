@@ -36,6 +36,7 @@ public class OrdersController {
                 new ResponseObject<>("SUCCESS","Get all order successfully!",list)
         );
     }
+
     @GetMapping("/user/orders/{id}")
     public ResponseEntity<?> getAllOrdersById(@PathVariable Long id){
         List<OrderDTO> list = ordersService.getAllOrdersById(id);
@@ -48,6 +49,7 @@ public class OrdersController {
                 new ResponseObject<>("SUCCESS","Get all order with id:"+id+" successfully!",list)
         );
     }
+
     @GetMapping("/user/orders/userId/{id}")
     public ResponseEntity<?> getAllOrdersByUserId(@PathVariable Long id){
         List<OrderDTO> list = ordersService.getAllOrdersByUserId(id);
@@ -65,6 +67,13 @@ public class OrdersController {
         return ordersService.createOrder(orderDTO);
     }
 
-
+@GetMapping("/user/orders/ordered/{id}")
+    public ResponseEntity<?> getOrderedBySalerId(@PathVariable Long id,
+                                                 @RequestParam(defaultValue = "1") int page,
+                                                 @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(
+                new ResponseObject<>("SUCCESS","Get all order with saler id: "+id+" successfully!",ordersService.getOrdersBySaler(id,page,size))
+        );
+}
 
 }

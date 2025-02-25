@@ -5,6 +5,7 @@
     import com.final_test_sof3012.sof3022_ass_restful_api.dto.request.UserRequest;
     import com.final_test_sof3012.sof3022_ass_restful_api.mappers.UserMapper;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.ResponseObject;
+    import com.final_test_sof3012.sof3022_ass_restful_api.models.Roles;
     import com.final_test_sof3012.sof3022_ass_restful_api.models.User;
     import com.final_test_sof3012.sof3022_ass_restful_api.services.UserService;
     import lombok.AccessLevel;
@@ -17,6 +18,7 @@
     import javax.swing.text.html.Option;
     import java.util.List;
     import java.util.Optional;
+    import java.util.Set;
 
     @RestController
     @RequiredArgsConstructor
@@ -28,9 +30,19 @@
         UserMapper userMapper;
 
         @GetMapping("users")
-        public ResponseEntity<?> getListOfUsersDto(){
+        public ResponseEntity<?> getListOfUsersDto(
+                @RequestParam(defaultValue = "ROLE_USER") String role,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "5") int size,
+                @RequestParam(defaultValue = "username") String key,
+                @RequestParam(defaultValue = "asc") String direction
+        ){
             return  ResponseEntity.ok(
-                    new ResponseObject<>("OK","List of user",userService.getAllUsers())
+                    new ResponseObject<>("OK",
+                            "List of user",
+                            userService
+                                    .getAllUsersWithoutRoles(Set.of(Roles.valueOf(role))
+                                            ,page,size,key,direction))
             );
         }
 
@@ -124,4 +136,15 @@
         public ResponseEntity<?> changeProfilePhoto(@PathVariable Long id,@RequestParam String photo){
             return userService.setProfilePhoto(id,photo);
         }
+
+        @PutMapping("/forget-password/{id}")
+        public ResponseEntity<?> changePasswordByForgetPassword(@PathVariable Long id,@RequestParam String password){
+            return userService.changePasswordByForgetPassword(id,password);
+        }
+
+        @PutMapping("/admin/user/locked/{id}")
+        public ResponseEntity<?> changeUserStatus(@PathVariable Long id){
+            return userService.changeUserStatus(id);
+        }
+
     }

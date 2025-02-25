@@ -102,4 +102,15 @@ public class ProductController {
         );
     }
 
+    @GetMapping("products/category")
+    public ResponseEntity<?> getProductsByCategory(@RequestParam String category){
+        List<ProductDTO> list = productService.filterProductsByCategory(category);
+        if(list.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(
+                new ResponseObject<>("OK","Get products by category: "+category+" successfully!",list)
+        );
+    }
+
 }

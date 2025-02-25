@@ -112,7 +112,7 @@ public class MailerService implements MailerInterface {
 
     private void setupAttachments(MimeMessageHelper mmHelper, MailerRequest request)throws MessagingException{
         String[] attachments = request.getAttachments();
-        if(attachments != null && attachments.length >0){
+        if(attachments != null){
             for(String attachment : attachments){
                 File file = new File(attachment);
                 mmHelper.addAttachment(file.getName(),file);

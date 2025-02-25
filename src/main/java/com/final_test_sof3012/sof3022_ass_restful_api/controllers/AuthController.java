@@ -39,14 +39,13 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         AuthResponse authResponse = authService.login(loginRequest);
         if(authResponse == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            return ResponseEntity.ok(
                     new ResponseObject<>("ERROR","NOT FOUND USER",null)
             );
         }
         return ResponseEntity.ok(
                 authResponse
         );
-//       return authService.login(loginRequest);
     }
 
     @PostMapping("registry")

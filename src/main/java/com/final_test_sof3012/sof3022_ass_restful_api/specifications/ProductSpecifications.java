@@ -18,4 +18,10 @@ public class ProductSpecifications {
                 cb.like(cb.lower(root.get("name")),"%"+key.toLowerCase()+"%");
     }
 
+    public static Specification<Product> hasCategory(String category){
+        return (root,query,cb) -> {
+            return cb.equal(root.get("category"),category);
+        };
+    }
+
 }

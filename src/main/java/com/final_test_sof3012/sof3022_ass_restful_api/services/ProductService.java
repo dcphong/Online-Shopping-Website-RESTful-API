@@ -128,4 +128,11 @@ public class ProductService {
         return list.stream().map(productMapper::toProductDTO).toList();
     }
 
+
+    @Transactional
+    public List<ProductDTO> filterProductsByCategory(String category){
+        Specification<Product> spec = ProductSpecifications.hasCategory(category);
+        List<Product> list = productRepository.findAll(spec);
+        return list.stream().map(productMapper::toProductDTO).toList();
+    }
 }
