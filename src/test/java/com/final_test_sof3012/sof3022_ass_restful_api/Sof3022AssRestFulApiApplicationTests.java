@@ -6,6 +6,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 @EnableScheduling
 class Sof3022AssRestFulApiApplicationTests {
@@ -14,6 +17,9 @@ class Sof3022AssRestFulApiApplicationTests {
     @Test
     void contextLoads() {
     }
+
+
+
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("CLOUDINARY_URL", () -> "cloudinary://349514472457269:r8pMioZZudpQKeWjDENMtQ0vsbg@sof3022-image-cloudinary");
@@ -28,5 +34,8 @@ class Sof3022AssRestFulApiApplicationTests {
         registry.add("SPRING_DB_URL", () -> "jdbc:sqlserver://localhost;database=DCPsShopWebsite;encrypt=false;trustServerCertificate=true");
         registry.add("DEFAULT_PAYMENT_STATUS", () -> "NOT_PAYMENT");
         registry.add("SPRING_MAIL_DEFAULT_FROM",() -> "HELLO @!#!@#!@#");
+
+
+        List<?> list = new ArrayList<>();
     }
 }

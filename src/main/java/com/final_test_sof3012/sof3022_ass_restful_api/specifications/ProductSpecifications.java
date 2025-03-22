@@ -20,8 +20,12 @@ public class ProductSpecifications {
 
     public static Specification<Product> hasCategory(String category){
         return (root,query,cb) -> {
-            return cb.equal(root.get("category"),category);
+            return cb.equal(root.get("category").get("name"),category);
         };
+    }
+
+    public static Specification<Product> isAvailable(String category){
+        return null;
     }
 
 }
